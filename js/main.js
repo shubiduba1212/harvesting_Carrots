@@ -12,6 +12,11 @@ const gameScore = document.querySelector('.game__score');
 const popUp = document.querySelector('.pop-up');
 const popUpRefresh = document.querySelector('.pop-up__refresh');
 const popUpText = document.querySelector('.pop-up__message');
+const carrotSound = new Audio('./sound/carrot_pull.mp3');
+const bugSound = new Audio('./sound/bug_pull.mp3');
+const alertSound = new Audio('./sound/alert.wav');
+const bgSound = new Audio('./sound/bg.mp3');
+const winSound = new Audio('./sound/game_win.mp3');
 
 let started = false;
 let score = 0;
@@ -32,22 +37,32 @@ popUpRefresh.addEventListener('click', () => {
 })
 
 function startGame() {
-  started = true;
+  started = true;  
   initGame();
   showStopButton();
   showTimerAndScore();
   startGameTimer();
+  playSound(bgSound);
 };
 function stopGame() {
   started = false;
   stopGameTimer();
   hideGameButton();
   showPopUpWithText('REPLAY❓');
+  playSound(alertSound);
+  stopSound(bgSound);
 };
 
 function finishGame(win) {
   started = false;
   hideGameButton();
+  if(win) {
+    playSound(winSound);
+  } else {
+    playSound(bugSound);
+  }
+  stopGameTimer();
+  stopSound(bgSound);
   showPopUpWithText(win ? 'YOU WON 🎊' : 'YOU LOST 💥');
 }
 
@@ -99,6 +114,7 @@ function hidePopUp() {
 }
 
 function initGame() {
+  score = 0;
   field.innerHTML = '';
   gameScore.innerText = carrot_count;
   addItem('carrot', carrot_count, '/img/carrot.png');
@@ -113,14 +129,23 @@ function onFieldClick() {
   if(target.matches('.carrot')) {
     target.remove();
     score++;
+    playSound(carrotSound);
     updateScoreBoard();
     if(score === carrot_count) {
       finishGame(true);
     }
-  } else if(target.matches('.bug')){
-    stopGameTimer();
+  } else if(target.matches('.bug')){    
     finishGame(false);
   }
+}
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
 }
 
 function updateScoreBoard() {
