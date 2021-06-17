@@ -2,6 +2,8 @@
 const carrot_Size = 80;
 const carrot_count = 5;
 const bug_count = 5;
+const game_duration_sec = 5;
+
 const field = document.querySelector('.game__field');
 const fieldRect = field.getBoundingClientRect();
 const gameBtn = document.querySelector('.game__button');
@@ -40,6 +42,24 @@ function showStopButton() {
 function showTimerAndScore() {
   gameTimer.style.visibility = 'visible';
   gameScore.style.visibility = 'visible';
+}
+
+function startGameTimer() {
+  let remainingTimeSec = game_duration_sec;
+  updateTimerText(remainingTimeSec);
+  timer = setInterval(() => {
+    if(remainingTimeSec <= 0) {
+      clearInterval(timer);
+      return;
+    }
+    updateTimerText(--remainingTimeSec);
+  }, 1000)
+}
+
+function updateTimerText(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  gameTimer.innerText = `${minutes}:${seconds}`;
 }
 
 function initGame() {
