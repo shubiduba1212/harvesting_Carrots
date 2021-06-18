@@ -1,5 +1,6 @@
 'use strict';
-const carrotSound = new Audio('./sound/carrot_pull.mp3');
+import * as sound from './sound.js';
+
 const carrot_Size = 80;
 export default class Field {
   constructor(carrotCount, bugCount) {
@@ -7,9 +8,7 @@ export default class Field {
     this.bugCount = bugCount;    
     this.field = document.querySelector('.game__field');
     this.fieldRect = this.field.getBoundingClientRect();
-    this.field.addEventListener('click', this.onClick);    
-    this.bugSound = new Audio('./sound/bug_pull.mp3');
-    this.bgSound = new Audio('./sound/bg.mp3');
+    this.field.addEventListener('click', this.onClick);  
   }
 
   init() {
@@ -44,16 +43,13 @@ export default class Field {
     const target = event.target;
     if(target.matches('.carrot')) {
       target.remove();
-      playSound(carrotSound);
+      sound.playCarrot();
       this.onItemClick && this.onItemClick('carrot');
     } else if(target.matches('.bug')){
+      sound.playBug();
       this.onItemClick && this.onItemClick('bug');
     }
   }  
-}
-function playSound(sound) {
-  sound.currentTime = 0;
-  sound.play();
 }
 
 function randomNumber(min, max) {

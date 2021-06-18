@@ -1,6 +1,8 @@
 'use strict';
 import PopUp from './popup.js';
 import Field from './field.js';
+import * as sound from './sound.js';
+
 
 const carrot_count = 5;
 const bug_count = 5;
@@ -10,12 +12,6 @@ const game_duration_sec = 5;
 const gameBtn = document.querySelector('.game__button');
 const gameTimer = document.querySelector('.game__timer');
 const gameScore = document.querySelector('.game__score');
-
-const carrotSound = new Audio('./sound/carrot_pull.mp3');
-const bugSound = new Audio('./sound/bug_pull.mp3');
-const alertSound = new Audio('./sound/alert.wav');
-const bgSound = new Audio('./sound/bg.mp3');
-const winSound = new Audio('./sound/game_win.mp3');
 
 let started = false;
 let score = 0;
@@ -57,27 +53,27 @@ function startGame() {
   showStopButton();
   showTimerAndScore();
   startGameTimer();
-  playSound(bgSound);
+  sound.playbg();
 };
 function stopGame() {
   started = false;
   stopGameTimer();
   hideGameButton();
   gameFisnishBanner.showWithText('REPLAY❓');
-  playSound(alertSound);
-  stopSound(bgSound);
+  sound.playAlert();
+  sound.stopbg();
 };
 
 function finishGame(win) {
   started = false;
   hideGameButton();
   if(win) {
-    playSound(winSound);
+    sound.playWin();
   } else {
-    playSound(bugSound);
+    sound.playBug();
   }
   stopGameTimer();
-  stopSound(bgSound);
+  sound.stopbg();
   gameFisnishBanner.showWithText(win ? 'YOU WON 🎊' : 'YOU LOST 💥');
 }
 
@@ -124,16 +120,6 @@ function initGame() {
   score = 0;
   gameScore.innerText = carrot_count;
   gamefield.init();
-}
-
-
-function playSound(sound) {
-  sound.currentTime = 0;
-  sound.play();
-}
-
-function stopSound(sound) {
-  sound.pause();
 }
 
 function updateScoreBoard() {
